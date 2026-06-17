@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sw33t Loop</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sour+Gummy&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="donut.css" />
+  </head>
+
+  <body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+      <a href="#" class="logo">
+        <img src="logo.png" alt="Sw33t Loop" />
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="menu.html">Menu</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="team.html">Team</a></li>
+      </ul>
+    </nav>
+
+    <!-- Hero page -->
+    <section class="hero" id="home">
+      <div class="hero-text">
+        <h1>Sprinkles, smiles, and sweetness in every bite.</h1>
+        <a href="#menu" class="hero-btn">See Our Menu</a>
+      </div>
+
+      <div class="hero-slideshow">
+        <input type="radio" name="slide" id="r1" checked />
+        <input type="radio" name="slide" id="r2" />
+        <input type="radio" name="slide" id="r3" />
+
+        <div class="slideshow-container">
+          <div class="mySlides" id="slide1">
+            <div class="numbertext">1 / 3</div>
+            <img src="original.png" style="width: 100%" />
+            <div class="text">Original</div>
+          </div>
+
+          <div class="mySlides" id="slide2">
+            <div class="numbertext">2 / 3</div>
+            <img src="chocolate.png" style="width: 100%" />
+            <div class="text">Chocolate</div>
+          </div>
+
+          <div class="mySlides" id="slide3">
+            <div class="numbertext">3 / 3</div>
+            <img src="matcha.png" style="width: 100%" />
+            <div class="text">Matcha</div>
+          </div>
+
+          <label class="prev prev-1" for="r3">&#10094;</label>
+          <label class="next next-1" for="r2">&#10095;</label>
+
+          <label class="prev prev-2" for="r1">&#10094;</label>
+          <label class="next next-2" for="r3">&#10095;</label>
+
+          <label class="prev prev-3" for="r2">&#10094;</label>
+          <label class="next next-3" for="r1">&#10095;</label>
+        </div>
+
+        <div class="dots">
+          <label class="dot d1" for="r1"></label>
+          <label class="dot d2" for="r2"></label>
+          <label class="dot d3" for="r3"></label>
+        </div>
+      </div>
+    </section>
+
+    <!--Footer-->
+    <footer>
+      <div class="footer-h4">
+        <div class="footer-logo-wrap">
+          <a href="#" class="footer-logo">
+            <img src="logo.png" alt="Sw33t Loop" />
+          </a>
+
+          <a href="menu.html" class="footer-btn">Order Now</a>
+        </div>
+        <div class="footer-col">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="menu.html">Menu</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a href="team.html">Team</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Contact Us</h4>
+          <div class="footer-contact">
+            <a><i class="fa-solid fa-phone"></i> +855 123 456 789</a>
+            <a href="https://maps.google.com"
+              ><i class="fa-solid fa-location-dot"></i> Phnom Penh</a
+            >
+            <a href="https://facebook.com"
+              ><i class="fa-brands fa-facebook"></i> Facebook</a
+            >
+            <a href="https://instagram.com"
+              ><i class="fa-brands fa-instagram"></i> Instagram</a
+            >
+            <a href="https://tiktok.com"
+              ><i class="fa-brands fa-tiktok"></i> TikTok</a
+            >
+            <a href="mailto:sw33tloop@gmail.com"
+              ><i class="fa-solid fa-envelope"></i> sw33tloop@gmail.com</a
+            >
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h4>Open Hours</h4>
+          <div class="footer-hours">
+            <div class="hours-row">
+              <span class="day"> Mon - Fri</span>
+              <span class="time">7:30 AM - 11:00 PM</span>
+            </div>
+            <div class="hours-row">
+              <span class="day"> Sat - Sun</span>
+              <span class="time">8:00 AM - 10:00 PM</span>
+            </div>
+            <div class="hours-row holiday">
+              <span class="day"> Holidays</span>
+              <span class="time"> 10:00 AM - 10:00 PM</span>
+            </div>
+            <span class="hours-note"> Last order 30 mins before close</span>
+          </div>
+        </div>
+      </div>
+
+      <hr class="footer-line" />
+      <span class="footer-bottom"
+        ><i>&copy; 2026 Sw33t Loop. All rights reserved.</i></span
+      >
+    </footer>
+  </body>
+</html>
