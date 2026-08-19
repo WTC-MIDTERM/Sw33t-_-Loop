@@ -1,0 +1,22 @@
+<section class="team" id="team">
+  <div class="team-txt">
+    <h1>MEET THE TEAM</h1>
+
+    @if (members.length > 0) {
+      <div class="teammates">
+        @for (member of members; track member.id) {
+          <div class="teammate-card">
+            <img [src]="getImageUrl(member)" alt="member.name" />
+            <div class="teammate-info">
+              <h3>{{ member.name }}</h3>
+              <p class="teammate-role">{{ member.role }}</p>
+              <p class="teammate-position">{{ member.position }}</p>
+            </div>
+          </div>
+        }
+      </div>
+    } @else {
+      <p>Loading team...</p>
+    }
+  </div>
+</section>

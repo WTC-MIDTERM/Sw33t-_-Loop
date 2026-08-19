@@ -1,0 +1,57 @@
+<footer>
+  <div class="footer-h4">
+    <div class="footer-logo-wrap">
+      <a routerLink="/" class="footer-logo">
+        <img src="assets/image/logo.png" alt="Sw33t Loop" />
+      </a>
+      <a routerLink="/menu" class="footer-btn">Order Now</a>
+    </div>
+
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a routerLink="/">Home</a></li>
+        <li><a routerLink="/about">About</a></li>
+        <li><a routerLink="/menu">Menu</a></li>
+        <li><a routerLink="/contact">Contact</a></li>
+        <li><a routerLink="/team">Team</a></li>
+      </ul>
+    </div>
+
+    @if (info) {
+      <div class="footer-col">
+        <h4>Contact Us</h4>
+        <div class="footer-contact">
+          <a><i class="fa-solid fa-phone"></i> {{ info.phone }}</a>
+          <a href="https://maps.google.com"><i class="fa-solid fa-location-dot"></i> {{ info.address }}</a>
+          <a [href]="info.facebook"><i class="fa-brands fa-facebook"></i> Facebook</a>
+          <a [href]="info.instagram"><i class="fa-brands fa-instagram"></i> Instagram</a>
+          <a [href]="info.tiktok"><i class="fa-brands fa-tiktok"></i> TikTok</a>
+          <a [href]="'mailto:' + info.email"><i class="fa-solid fa-envelope"></i> {{ info.email }}</a>
+        </div>
+      </div>
+    }
+
+    <div class="footer-col">
+      <h4>Open Hours</h4>
+      <div class="footer-hours">
+        <div class="hours-row">
+          <span class="day">Mon - Fri</span>
+          <span class="time">7:30 AM - 11:00 PM</span>
+        </div>
+        <div class="hours-row">
+          <span class="day">Sat - Sun</span>
+          <span class="time">8:00 AM - 10:00 PM</span>
+        </div>
+        <div class="hours-row holiday">
+          <span class="day">Holidays</span>
+          <span class="time">10:00 AM - 10:00 PM</span>
+        </div>
+        <span class="hours-note">Last order 30 mins before close</span>
+      </div>
+    </div>
+  </div>
+
+  <hr class="footer-line" />
+  <span class="footer-bottom"><i>&copy; 2026 Sw33t Loop. All rights reserved.</i></span>
+</footer> 1.10

@@ -1,0 +1,171 @@
+.navbar {
+  position: relative;
+  z-index: 1000;
+}
+
+/* Make the desktop navbar logo bigger while keeping the existing
+   background/style from the global stylesheet untouched */
+.navbar .logo img {
+  height: 70px;
+  width: auto;
+}
+
+/* Hamburger button: hidden by default (desktop), shown only on small screens */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  cursor: pointer;
+  z-index: 1101;
+  position: relative;
+
+  /* Glassmorphism container -- the blur needs a real surface area to work
+     on, which is why it's applied here to the button, not to each thin bar */
+  background-color: rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 12px;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.hamburger span {
+  display: block;
+  height: 2.5px;
+  width: 22px;
+  background-color: #3a1f1f;
+  border-radius: 2px;
+  transition: transform 0.3s ease, opacity 0.3s ease, background-color 0.3s ease;
+}
+
+/* When open, lighten the glass panel and turn the bars white + into an X */
+.hamburger.open {
+  background-color: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.hamburger.open span {
+  background-color: #fff;
+}
+
+.hamburger.open span:nth-child(1) {
+  transform: translateY(7.5px) rotate(45deg);
+}
+.hamburger.open span:nth-child(2) {
+  opacity: 0;
+}
+.hamburger.open span:nth-child(3) {
+  transform: translateY(-7.5px) rotate(-45deg);
+}
+
+/* Hidden by default (desktop) -- only shown inside the mobile menu below */
+.mobile-logo {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .hamburger {
+    display: flex;
+  }
+
+  /* Full-screen overlay menu, left-aligned */
+  .nav-links {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100vh;
+    margin: 0;
+    padding: 100px 40px 40px;
+    list-style: none;
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 28px;
+
+    background: linear-gradient(180deg, #3a1f1f 0%, #2b1512 100%);
+
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-20px);
+    transition: opacity 0.35s ease, transform 0.35s ease, visibility 0.35s;
+
+    z-index: 1100;
+  }
+
+  .nav-links.mobile-open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  /* Logo inside the mobile menu, sits above the links */
+  .mobile-logo {
+    display: block;
+    margin-bottom: 20px;
+    padding: 12px 24px;
+    margin: 0 auto;
+    opacity: 0;
+    transform: translateY(15px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+
+  .mobile-logo img {
+    height: 100px;
+    width: auto;
+    display: block;
+   
+  }
+
+  .nav-links.mobile-open .mobile-logo {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0s;
+  }
+
+  .nav-links li {
+    opacity: 0;
+    transform: translateY(15px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+
+  .nav-links.mobile-open li {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Stagger each item's fade-in (logo first, then each link) */
+  .nav-links.mobile-open li:nth-child(2) { transition-delay: 0.08s; }
+  .nav-links.mobile-open li:nth-child(3) { transition-delay: 0.13s; }
+  .nav-links.mobile-open li:nth-child(4) { transition-delay: 0.18s; }
+  .nav-links.mobile-open li:nth-child(5) { transition-delay: 0.23s; }
+  .nav-links.mobile-open li:nth-child(6) { transition-delay: 0.28s; }
+
+  .nav-links a {
+    font-size: 1.7rem;
+    color: #fdf6f0;
+    text-decoration: none;
+    padding: 8px 20px;
+    border-radius: 999px;
+    transition: background-color 0.25s ease, color 0.25s ease;
+    display: inline-block;
+  }
+
+  .nav-links a.active,
+  .nav-links a:hover {
+    background-color: #fdf6f0;
+    color: #3a1f1f;
+  }
+
+  body:has(.nav-links.mobile-open) {
+    overflow: hidden;
+  }
+}

@@ -1,0 +1,23 @@
+.slide-image {
+  width: 100%;
+}
+
+/* The original CSS hid .mySlides, .prev, .next, and .dot by default,
+   only revealing the correct ones via a radio-button :checked selector
+   trick. Since Angular now controls the current slide directly (see
+   home.html/home.ts) instead of relying on that CSS mechanism, we
+   override the defaults here so everything is visible and clickable. */
+.mySlides {
+  display: block !important;
+}
+
+.prev,
+.next {
+  display: block !important;
+  cursor: pointer;
+}
+
+.dot {
+  display: inline-block !important;
+  cursor: pointer;
+}

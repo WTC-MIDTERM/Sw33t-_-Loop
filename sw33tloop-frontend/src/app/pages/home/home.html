@@ -1,0 +1,31 @@
+<section class="hero" id="home">
+  <div class="hero-text">
+    <h1>Sprinkles, smiles, and sweetness in every bite.</h1>
+    <a routerLink="/menu" class="hero-btn">See Our Menu</a>
+  </div>
+
+  @if (slides.length > 0) {
+    <div class="hero-slideshow">
+      <div class="slideshow-container">
+        @for (slide of slides; track slide.id; let i = $index) {
+          @if (i === currentIndex) {
+            <div class="mySlides">
+              <div class="numbertext">{{ i + 1 }} / {{ slides.length }}</div>
+              <img [src]="getImageUrl(slide)" alt="slide.caption" class="slide-image" />
+              <div class="text">{{ slide.caption }}</div>
+            </div>
+          }
+        }
+
+        <a class="prev" (click)="prevSlide()">&#10094;</a>
+        <a class="next" (click)="nextSlide()">&#10095;</a>
+      </div>
+
+      <div class="dots">
+        @for (slide of slides; track slide.id; let i = $index) {
+          <span class="dot" [class.active]="i === currentIndex" (click)="goToSlide(i)"></span>
+        }
+      </div>
+    </div>
+  }
+</section>

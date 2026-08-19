@@ -18,6 +18,7 @@ html {
   padding: 0 40px;
   background-color: rgb(247, 250, 233, 0.4);
   border: 2px solid rgba(252, 248, 248, 0.4);
+ -webkit-backdrop-filter: blur(2vh);
   backdrop-filter: blur(2vh);
   border-radius: 2vh;
   height: 100px;
@@ -45,6 +46,7 @@ html {
   background-blend-mode: hard-light;
   border-radius: 20px;
   padding: 10px;
+  -webkit-backdrop-filter: calc(5px);
   backdrop-filter: calc(5px);
 }
 
@@ -140,6 +142,7 @@ input[type="radio"] { display: none; }
   font-size: 18px;
   transition: background 0.6s ease;
   border-radius: 0 3px 3px 0;
+  -webkit-user-select: none;
   user-select: none;
 }
 .next { right: 0; border-radius: 3px 0 0 3px; }
@@ -406,6 +409,7 @@ footer {
   margin-left: 110vh;
   position: absolute;
   top: 250px;
+  -webkit-backdrop-filter: blur(5vh);
   backdrop-filter: blur(5vh);
   border-radius: 15px;
   display: inline-block;
@@ -559,6 +563,7 @@ footer {
 }
 .contact-form{
   background: rgba(255, 255, 255, 0.15);  
+  -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);            
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 20px;
