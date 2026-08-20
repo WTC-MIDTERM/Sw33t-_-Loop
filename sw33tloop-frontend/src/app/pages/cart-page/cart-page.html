@@ -67,6 +67,9 @@
             rows="3"
             placeholder="Look up your address on Google Maps, then note it here..."
           ></textarea>
+          @if (checkoutForm.get('location')?.invalid && checkoutForm.get('location')?.touched) {
+            <p class="field-error">Please enter your delivery location.</p>
+          }
 
           <label>Payment Method</label>
           <div class="payment-options">
@@ -100,7 +103,20 @@
             </div>
           }
 
-          <button type="submit" class="place-order-btn">PLACE ORDER</button>
+          <button type="submit" class="place-order-btn" [disabled]="submitting">
+            {{ submitting ? 'PLACING ORDER...' : 'PLACE ORDER' }}
+          </button>
+
+          @if (errorMessage) {
+            <div class="checkout-error">
+              <p>{{ errorMessage }}</p>
+              @if (!auth.isLoggedIn()) {
+                <button type="button" class="login-prompt-btn" (click)="goToLogin()">
+                  Log In / Sign Up
+                </button>
+              }
+            </div>
+          }
         </form>
       </div>
     </div>

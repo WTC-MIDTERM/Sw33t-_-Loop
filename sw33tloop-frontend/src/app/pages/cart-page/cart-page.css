@@ -26,6 +26,18 @@
   font-weight: 600;
 }
 
+.back-link {
+  display: inline-block;
+  margin-bottom: 20px;
+  color: #3a1f1f;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
 .cart-layout {
   display: grid;
   grid-template-columns: 1.5fr 1fr;
@@ -134,6 +146,33 @@
   resize: vertical;
 }
 
+.field-error {
+  margin: -6px 0 0;
+  color: #c0392b;
+  font-size: 0.8rem;
+}
+
+.location-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.maps-link {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #3a1f1f;
+  text-decoration: none;
+  background-color: rgba(58, 31, 31, 0.08);
+  padding: 4px 10px;
+  border-radius: 999px;
+  transition: background-color 0.2s ease;
+}
+
+.maps-link:hover {
+  background-color: rgba(58, 31, 31, 0.15);
+}
+
 .payment-options {
   display: flex;
   flex-direction: column;
@@ -143,9 +182,61 @@
 .payment-option {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   font-weight: 400;
   cursor: pointer;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #e0d5cd;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.payment-option.selected {
+  background-color: rgba(58, 31, 31, 0.06);
+  border-color: #3a1f1f;
+  font-weight: 600;
+}
+
+.payment-radio {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.payment-radio input[type='radio'] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  border: 2px solid #b0a49c;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.payment-option.selected .payment-radio input[type='radio'] {
+  border-color: #3a1f1f;
+  background-color: #3a1f1f;
+}
+
+.check-icon {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  pointer-events: none;
 }
 
 .bank-details {
@@ -180,6 +271,36 @@
   background-color: #3a1f1f;
   color: #fff;
   font-weight: 700;
+  cursor: pointer;
+}
+
+.place-order-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.checkout-error {
+  background-color: #fdecea;
+  border: 1px solid #f5c6cb;
+  border-radius: 10px;
+  padding: 12px 14px;
+  text-align: center;
+}
+
+.checkout-error p {
+  margin: 0 0 8px;
+  color: #c0392b;
+  font-size: 0.9rem;
+}
+
+.login-prompt-btn {
+  padding: 8px 20px;
+  border: none;
+  border-radius: 999px;
+  background-color: #3a1f1f;
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.85rem;
   cursor: pointer;
 }
 

@@ -40,6 +40,9 @@
         "delivered",
         "cancelled"
       ]
+    },
+    "Phone": {
+      "type": "text"
     }
   }
 }

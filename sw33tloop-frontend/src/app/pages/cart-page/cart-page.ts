@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CartService } from '../../core/cart';
-import { OrderService } from '../../core/order';
+import { StrapiService } from '../../core/strapi';
+import { AuthService } from '../../core/auth';
 
 @Component({
   selector: 'app-cart',
@@ -23,8 +24,10 @@ export class CartPage {
 
   constructor(
     public cart: CartService,
-    private fb: FormBuilder,
-    private orderService: OrderService
+    public auth: AuthService,
+    private strapi: StrapiService,
+    private router: Router,
+    private fb: FormBuilder
   ) {
     this.checkoutForm = this.fb.group({
       location: ['', Validators.required],
@@ -42,37 +45,48 @@ export class CartPage {
       return;
     }
 
+    // Frontend also checks this so the person gets a clear message
+    // right away, instead of a confusing error after submitting --
+    // the backend enforces this too either way.
+    if (!this.auth.isLoggedIn()) {
+      this.errorMessage = 'Please log in or create an account to place an order.';
+      return;
+    }
+
     this.submitting = true;
     this.errorMessage = '';
 
     const payload = {
-      items: this.cart.items().map((item) => ({
-        id: item.id,
-        name: item.name,
-        price: item.price,
-        quantity: item.quantity
+      items: this.cart.items().map((i) => ({
+        id: i.id,
+        name: i.name,
+        price: i.price,
+        quantity: i.quantity
       })),
       total: this.cart.total(),
       location: this.checkoutForm.value.location,
-      paymentMethod: this.checkoutForm.value.paymentMethod
+      paymentMethod: this.checkoutForm.value.paymentMethod as 'cash' | 'bank'
     };
 
-    this.orderService.placeOrder(payload).subscribe({
+    this.strapi.createOrder(payload).subscribe({
       next: () => {
         this.submitting = false;
         this.orderPlaced = true;
         this.cart.clearCart();
       },
-      error: (err: any) => {
+      error: (err) => {
         this.submitting = false;
         if (err.status === 401) {
-          this.errorMessage = 'Please log in to place an order.';
+          this.errorMessage = 'Please log in or create an account to place an order.';
         } else {
-          this.errorMessage =
-            err?.error?.error?.message || 'Something went wrong placing your order. Please try again.';
+          this.errorMessage = 'Something went wrong placing your order. Please try again.';
         }
-        console.error(err);
+        console.error('Order failed', err);
       }
     });
+  }
+
+  goToLogin(): void {
+    this.router.navigate(['/login']);
   }
 }
