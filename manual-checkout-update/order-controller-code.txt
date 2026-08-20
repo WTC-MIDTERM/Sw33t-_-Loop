@@ -40,16 +40,12 @@ export default factories.createCoreController(
         return ctx.unauthorized('You must be logged in to place an order.');
       }
 
-      const order = await strapi.documents('api::order.order').create({
-        data: {
-          ...ctx.request.body.data,
-          users_permissions_user: {
-            connect: [ctx.state.user.documentId],
-          },
-        },
-      });
+      ctx.request.body.data = {
+        ...ctx.request.body.data,
+        users_permissions_user: ctx.state.user.id,
+      };
 
-      ctx.body = { data: order };
+      return super.create(ctx);
     },
   })
 );

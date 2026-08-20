@@ -3,7 +3,7 @@
 
   @if (orderPlaced) {
     <div class="order-confirmation">
-      <h2>Thank you!</h2>
+      <h2>Thank you! 🎉</h2>
       <p>Your order has been placed. We'll be in touch shortly.</p>
       <p>Your order status: <strong>{{ orderStatus }}</strong></p>
       <a routerLink="/menu" class="back-to-menu-btn">Back to Menu</a>
@@ -65,7 +65,10 @@
               <span class="payment-radio"><input type="radio" formControlName="paymentMethod" value="cash" /> @if (selectedPaymentMethod === 'cash') { <span class="check-icon">✓</span> }</span>
               Cash on Delivery
             </label>
-         
+            <label class="payment-option" [class.selected]="selectedPaymentMethod === 'bank'">
+              <span class="payment-radio"><input type="radio" formControlName="paymentMethod" value="bank" /> @if (selectedPaymentMethod === 'bank') { <span class="check-icon">✓</span> }</span>
+              Bank Transfer / QR Code
+            </label>
           </div>
 
           @if (selectedPaymentMethod === 'bank') {

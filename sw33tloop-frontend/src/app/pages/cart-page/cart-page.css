@@ -278,6 +278,21 @@
   opacity: 0.6;
   cursor: not-allowed;
 }
+.checkout-panel textarea,
+.checkout-panel input[type='tel'] {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-family: inherit;
+}
+
+.checkout-panel textarea { resize: vertical; }
+
+.secondary-login-btn {
+  margin-left: 8px;
+  background-color: #7a6359;
+}
+
 
 .checkout-error {
   background-color: #fdecea;

@@ -1,0 +1,17 @@
+/* Add these changes to your existing cart-page.css file. */
+
+/* Replace the existing textarea selector with this selector. */
+.checkout-panel textarea,
+.checkout-panel input[type='tel'] {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-family: inherit;
+}
+
+.checkout-panel textarea { resize: vertical; }
+
+.secondary-login-btn {
+  margin-left: 8px;
+  background-color: #7a6359;
+}

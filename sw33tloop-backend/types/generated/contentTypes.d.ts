@@ -583,22 +583,26 @@ export interface ApiOrderOrder extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    items: Schema.Attribute.JSON;
+    items: Schema.Attribute.JSON & Schema.Attribute.Required;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::order.order'> &
       Schema.Attribute.Private;
-    location: Schema.Attribute.Text;
+    location: Schema.Attribute.Text & Schema.Attribute.Required;
     orderStatus: Schema.Attribute.Enumeration<
       ['pending', 'confirmed', 'delivered', 'cancelled']
-    >;
-    paymentMethod: Schema.Attribute.Enumeration<['cash', 'bank']>;
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'pending'>;
+    paymentMethod: Schema.Attribute.Enumeration<['cash', 'bank']> &
+      Schema.Attribute.Required;
+    phone: Schema.Attribute.String & Schema.Attribute.Required;
     publishedAt: Schema.Attribute.DateTime;
-    total: Schema.Attribute.Decimal;
+    total: Schema.Attribute.Decimal & Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     users_permissions_user: Schema.Attribute.Relation<
-      'oneToOne',
+      'manyToOne',
       'plugin::users-permissions.user'
     >;
   };

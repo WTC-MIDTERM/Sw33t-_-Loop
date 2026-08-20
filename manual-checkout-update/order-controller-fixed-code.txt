@@ -49,7 +49,8 @@ export default factories.createCoreController(
         },
       });
 
-      ctx.body = { data: order };
+      const sanitizedOrder = await this.sanitizeOutput(order, ctx);
+      return this.transformResponse(sanitizedOrder);
     },
   })
 );
