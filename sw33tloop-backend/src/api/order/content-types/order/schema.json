@@ -1,0 +1,45 @@
+{
+  "kind": "collectionType",
+  "collectionName": "orders",
+  "info": {
+    "singularName": "order",
+    "pluralName": "orders",
+    "displayName": "Order"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "users_permissions_user": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "plugin::users-permissions.user"
+    },
+    "items": {
+      "type": "json"
+    },
+    "total": {
+      "type": "decimal"
+    },
+    "location": {
+      "type": "text"
+    },
+    "paymentMethod": {
+      "type": "enumeration",
+      "enum": [
+        "cash",
+        "bank"
+      ]
+    },
+    "orderStatus": {
+      "type": "enumeration",
+      "enum": [
+        "pending",
+        "confirmed",
+        "delivered",
+        "cancelled"
+      ]
+    }
+  }
+}

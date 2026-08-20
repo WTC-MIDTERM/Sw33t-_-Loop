@@ -1,0 +1,25 @@
+<section class="auth-page">
+  <div class="auth-box">
+    <h1>Log In</h1>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <label for="identifier">Email or Username</label>
+      <input type="text" id="identifier" formControlName="identifier" placeholder="you@example.com" />
+
+      <label for="password">Password</label>
+      <input type="password" id="password" formControlName="password" placeholder="Your password" />
+
+      <button type="submit" [disabled]="submitting">
+        {{ submitting ? 'LOGGING IN...' : 'LOG IN' }}
+      </button>
+
+      @if (errorMessage) {
+        <p class="auth-error">{{ errorMessage }}</p>
+      }
+    </form>
+
+    <p class="auth-switch">
+      Don't have an account? <a routerLink="/register">Sign up</a>
+    </p>
+  </div>
+</section>

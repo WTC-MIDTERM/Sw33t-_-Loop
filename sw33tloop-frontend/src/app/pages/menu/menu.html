@@ -6,13 +6,19 @@
       <div class="menu-grid">
         @for (item of items; track item.id) {
           <div class="menu-card">
-            <img [src]="getImageUrl(item)" alt="item.name" />
+            <img [src]="getImageUrl(item)" [alt]="item.name" />
             <div class="menu-info">
               <h3>{{ item.name.toUpperCase() }}</h3>
               <p>{{ item.desc }}</p>
               <div class="menu-bottom">
                 <span class="menu-price">${{ item.price.toFixed(2) }}</span>
-                <button class="menu-btn">+</button>
+                <button
+                  class="menu-btn"
+                  [class.added]="addedItemId === item.id"
+                  (click)="addToCart(item)"
+                >
+                  {{ addedItemId === item.id ? '✓' : '+' }}
+                </button>
               </div>
             </div>
           </div>

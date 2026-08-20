@@ -1,0 +1,20 @@
+<section class="admin-page">
+  <h1>Admin Dashboard</h1>
+
+  @if (currentUser) {
+    <p>Welcome, {{ currentUser.username }}.</p>
+  }
+
+  <div class="admin-stats">
+    <div class="stat-card">
+      <h3>{{ menuItemCount }}</h3>
+      <p>Menu Items</p>
+    </div>
+  </div>
+
+  <p class="admin-note">
+    This is a starting dashboard. To manage donuts, team members, or view
+    contact messages in detail, use the full
+    <a href="http://localhost:1337/admin" target="_blank">Strapi admin panel</a>.
+  </p>
+</section>

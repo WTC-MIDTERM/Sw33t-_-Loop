@@ -1,15 +1,64 @@
 .navbar {
   position: relative;
   z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cart-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: rgba(58, 31, 31, 0.08);
+  color: #3a1f1f;
+  font-size: 1.1rem;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+.cart-btn:hover {
+  background-color: rgba(58, 31, 31, 0.15);
+}
+
+.cart-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background-color: #c0392b;
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Make the desktop navbar logo bigger while keeping the existing
    background/style from the global stylesheet untouched */
 .navbar .logo img {
-  height: 70px;
-  width: auto;
-}
+  height: 125px;
+  width:auto;
+  margin-top: 25px;
+  margin-left: -60px;
 
+}
 /* Hamburger button: hidden by default (desktop), shown only on small screens */
 .hamburger {
   display: none;
@@ -69,34 +118,116 @@
   display: none;
 }
 
+/* Desktop only: pull the nav-links pill away from center and over next
+   to the cart/account icons instead of leaving it in the middle */
+@media (min-width: 901px) {
+  .nav-links {
+    margin-left: auto;
+    margin-right: 24px;
+  }
+}
+
+/* ---------- ACCOUNT ICON + DROPDOWN ---------- */
+.account-item {
+  position: relative;
+  list-style: none;
+  z-index: 1101;
+}
+
+.account-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background-color: rgba(58, 31, 31, 0.08);
+  color: #3a1f1f;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.account-btn:hover {
+  background-color: rgba(58, 31, 31, 0.15);
+}
+
+.account-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  min-width: 160px;
+  background: #fdf6f0;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+  z-index: 1200;
+}
+
+.account-dropdown.open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.account-dropdown a {
+  padding: 10px 14px;
+  border-radius: 8px;
+  color: #3a1f1f;
+  text-decoration: none;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.account-dropdown a:hover {
+  background-color: rgba(58, 31, 31, 0.08);
+}
+
 @media (max-width: 900px) {
   .hamburger {
     display: flex;
   }
 
-  /* Full-screen overlay menu, left-aligned */
+  /* Compact rounded dropdown card, anchored near the top -- not a
+     full-screen overlay anymore */
   .nav-links {
     position: fixed;
-    inset: 0;
-    width: 100%;
-    height: 100vh;
+    top: 84px;
+    left: 12px;
+    right: 12px;
+    width: auto;
+    height: auto;
+    max-height: calc(100vh - 110px);
+    overflow-y: auto;
     margin: 0;
-    padding: 100px 40px 40px;
+    padding: 20px 16px;
     list-style: none;
     box-sizing: border-box;
 
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
     justify-content: flex-start;
-    gap: 28px;
+    gap: 4px;
 
-    background: linear-gradient(180deg, #3a1f1f 0%, #2b1512 100%);
+    background: #eaf7f8;
+    border-radius: 24px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
 
     opacity: 0;
     visibility: hidden;
-    transform: translateY(-20px);
-    transition: opacity 0.35s ease, transform 0.35s ease, visibility 0.35s;
+    transform: translateY(-16px);
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
 
     z-index: 1100;
   }
@@ -107,34 +238,17 @@
     transform: translateY(0);
   }
 
-  /* Logo inside the mobile menu, sits above the links */
+  /* The card already has its own logo/close in the top bar, so hide the
+     duplicate logo that used to live inside the full-screen overlay */
   .mobile-logo {
-    display: block;
-    margin-bottom: 20px;
-    padding: 12px 24px;
-    margin: 0 auto;
-    opacity: 0;
-    transform: translateY(15px);
-    transition: opacity 0.4s ease, transform 0.4s ease;
-  }
-
-  .mobile-logo img {
-    height: 100px;
-    width: auto;
-    display: block;
-   
-  }
-
-  .nav-links.mobile-open .mobile-logo {
-    opacity: 1;
-    transform: translateY(0);
-    transition-delay: 0s;
+    display: none;
   }
 
   .nav-links li {
+    text-align: center;
     opacity: 0;
-    transform: translateY(15px);
-    transition: opacity 0.4s ease, transform 0.4s ease;
+    transform: translateY(10px);
+    transition: opacity 0.35s ease, transform 0.35s ease;
   }
 
   .nav-links.mobile-open li {
@@ -142,27 +256,41 @@
     transform: translateY(0);
   }
 
-  /* Stagger each item's fade-in (logo first, then each link) */
-  .nav-links.mobile-open li:nth-child(2) { transition-delay: 0.08s; }
-  .nav-links.mobile-open li:nth-child(3) { transition-delay: 0.13s; }
-  .nav-links.mobile-open li:nth-child(4) { transition-delay: 0.18s; }
-  .nav-links.mobile-open li:nth-child(5) { transition-delay: 0.23s; }
-  .nav-links.mobile-open li:nth-child(6) { transition-delay: 0.28s; }
+  /* Stagger each item's fade-in */
+  .nav-links.mobile-open li:nth-child(2) { transition-delay: 0.05s; }
+  .nav-links.mobile-open li:nth-child(3) { transition-delay: 0.1s; }
+  .nav-links.mobile-open li:nth-child(4) { transition-delay: 0.15s; }
+  .nav-links.mobile-open li:nth-child(5) { transition-delay: 0.2s; }
+  .nav-links.mobile-open li:nth-child(6) { transition-delay: 0.25s; }
 
   .nav-links a {
-    font-size: 1.7rem;
-    color: #fdf6f0;
+    font-size: 1.15rem;
+    font-weight: 500;
+    color: #1f2a2b;
     text-decoration: none;
-    padding: 8px 20px;
-    border-radius: 999px;
-    transition: background-color 0.25s ease, color 0.25s ease;
-    display: inline-block;
+    padding: 14px 12px;
+    border-radius: 14px;
+    display: block;
+    transition: background-color 0.2s ease, color 0.2s ease;
   }
 
   .nav-links a.active,
   .nav-links a:hover {
-    background-color: #fdf6f0;
+    background-color: rgba(58, 31, 31, 0.08);
+  }
+
+  /* Cart and account icons stay on the light navbar background here,
+     so keep the original (non-inverted) colors instead of the old
+     dark-overlay white styling */
+  .cart-btn,
+  .account-btn {
+    background-color: rgba(58, 31, 31, 0.08);
     color: #3a1f1f;
+  }
+
+  .cart-btn:hover,
+  .account-btn:hover {
+    background-color: rgba(58, 31, 31, 0.15);
   }
 
   body:has(.nav-links.mobile-open) {

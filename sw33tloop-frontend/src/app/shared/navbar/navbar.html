@@ -3,17 +3,6 @@
     <img src="assets/image/logo.png" alt="Sw33t Loop" />
   </a>
 
-  <button
-    class="hamburger"
-    [class.open]="menuOpen"
-    (click)="toggleMenu()"
-    aria-label="Toggle menu"
-  >
-    <span></span>
-    <span></span>
-    <span></span>
-  </button>
-
   <ul class="nav-links" [class.mobile-open]="menuOpen">
     <li class="mobile-logo">
       <img src="assets/image/logo.png" alt="Sw33t Loop" />
@@ -24,4 +13,42 @@
     <li><a routerLink="/contact" routerLinkActive="active" (click)="closeMenu()">Contact</a></li>
     <li><a routerLink="/team" routerLinkActive="active" (click)="closeMenu()">Team</a></li>
   </ul>
+
+  <div class="nav-actions">
+    <a routerLink="/cart" class="cart-btn" (click)="closeMenu()" aria-label="View cart">
+      <i class="fa-solid fa-cart-shopping"></i>
+      @if (cart.itemCount() > 0) {
+        <span class="cart-badge">{{ cart.itemCount() }}</span>
+      }
+    </a>
+
+    <div class="account-item">
+      <button class="account-btn" (click)="toggleAccountMenu($event)" aria-label="Account menu">
+        <i class="fa-solid fa-user"></i>
+      </button>
+
+      <div class="account-dropdown" [class.open]="accountMenuOpen">
+        @if (auth.isLoggedIn()) {
+          @if (auth.isAdmin()) {
+            <a routerLink="/admin" (click)="closeMenu()">Admin</a>
+          }
+          <a (click)="logout()">Log Out</a>
+        } @else {
+          <a routerLink="/login" (click)="closeMenu()">Log In</a>
+          <a routerLink="/register" (click)="closeMenu()">Sign Up</a>
+        }
+      </div>
+    </div>
+
+    <button
+      class="hamburger"
+      [class.open]="menuOpen"
+      (click)="toggleMenu()"
+      aria-label="Toggle menu"
+    >
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </div>
 </nav>

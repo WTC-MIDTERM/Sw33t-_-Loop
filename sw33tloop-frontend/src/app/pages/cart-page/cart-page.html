@@ -1,0 +1,108 @@
+<section class="cart-page">
+  <h1>Your Cart</h1>
+
+  @if (orderPlaced) {
+    <div class="order-confirmation">
+      <h2>Thank you! 🎉</h2>
+      <p>Your order has been placed. We'll be in touch shortly.</p>
+      <a routerLink="/menu" class="back-to-menu-btn">Back to Menu</a>
+    </div>
+  } @else if (cart.items().length === 0) {
+    <div class="empty-cart">
+      <p>Your cart is empty.</p>
+      <a routerLink="/menu" class="back-to-menu-btn">Browse the Menu</a>
+    </div>
+  } @else {
+    <a routerLink="/menu" class="back-link">← Back to Menu</a>
+
+    <div class="cart-layout">
+      <!-- Cart items -->
+      <div class="cart-items">
+        @for (item of cart.items(); track item.id) {
+          <div class="cart-item">
+            <img [src]="item.imageUrl" [alt]="item.name" />
+            <div class="cart-item-info">
+              <h3>{{ item.name }}</h3>
+              <p class="cart-item-price">${{ item.price.toFixed(2) }} each</p>
+            </div>
+            <div class="cart-item-qty">
+              <button (click)="cart.decrement(item.id)">−</button>
+              <span>{{ item.quantity }}</span>
+              <button (click)="cart.increment(item.id)">+</button>
+            </div>
+            <div class="cart-item-subtotal">
+              ${{ (item.price * item.quantity).toFixed(2) }}
+            </div>
+            <button class="remove-btn" (click)="cart.removeItem(item.id)" aria-label="Remove item">
+              ×
+            </button>
+          </div>
+        }
+      </div>
+
+      <!-- Checkout panel -->
+      <div class="checkout-panel">
+        <h2>Checkout</h2>
+
+        <div class="cart-total-row">
+          <span>Total</span>
+          <span class="cart-total-amount">${{ cart.total().toFixed(2) }}</span>
+        </div>
+
+        <form [formGroup]="checkoutForm" (ngSubmit)="placeOrder()">
+          <div class="location-label-row">
+            <label for="location">Delivery Location</label>
+            <a
+              href="https://www.google.com/maps"
+              target="_blank"
+              rel="noopener"
+              class="maps-link"
+            >
+              📍 Find on Google Maps
+            </a>
+          </div>
+          <textarea
+            id="location"
+            formControlName="location"
+            rows="3"
+            placeholder="Look up your address on Google Maps, then note it here..."
+          ></textarea>
+
+          <label>Payment Method</label>
+          <div class="payment-options">
+            <label class="payment-option" [class.selected]="selectedPaymentMethod === 'cash'">
+              <span class="payment-radio">
+                <input type="radio" formControlName="paymentMethod" value="cash" />
+                @if (selectedPaymentMethod === 'cash') {
+                  <span class="check-icon">✓</span>
+                }
+              </span>
+              Cash on Delivery
+            </label>
+            <label class="payment-option" [class.selected]="selectedPaymentMethod === 'bank'">
+              <span class="payment-radio">
+                <input type="radio" formControlName="paymentMethod" value="bank" />
+                @if (selectedPaymentMethod === 'bank') {
+                  <span class="check-icon">✓</span>
+                }
+              </span>
+              Bank Transfer / QR Code
+            </label>
+          </div>
+
+          @if (selectedPaymentMethod === 'bank') {
+            <div class="bank-details">
+              <img src="assets/image/payment-qr.png" alt="Payment QR Code" class="qr-code" />
+              <p><strong>{{ bankName }}</strong></p>
+              <p>{{ bankAccountName }}</p>
+              <p>{{ bankAccountNumber }}</p>
+              <p class="bank-note">Scan the QR code or transfer to the account above, then place your order.</p>
+            </div>
+          }
+
+          <button type="submit" class="place-order-btn">PLACE ORDER</button>
+        </form>
+      </div>
+    </div>
+  }
+</section>
