@@ -1,0 +1,15 @@
+File: sw33tloop-backend/src/api/order/controllers/order.ts
+
+In the find() method, replace everything starting with ctx.query = through return super.find(ctx); with:
+
+ctx.query = {
+  ...ctx.query,
+  sort: 'createdAt:desc',
+  filters: ctx.state.user.isAdmin
+    ? ctx.query.filters
+    : { ...ctx.query.filters, users_permissions_user: ctx.state.user.id },
+};
+
+return super.find(ctx);
+
+This means an admin sees all orders; a customer only sees their own orders.

@@ -1,32 +1,27 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../core/auth';
 
 @Component({
-  selector: 'app-login',
+  selector: 'app-forgot-password',
   imports: [ReactiveFormsModule, RouterLink],
-  templateUrl: './login.html',
-  styleUrl: './login.css'
+  templateUrl: './forgot-password.html',
+  styleUrl: './forgot-password.css'
 })
-export class Login {
+export class ForgotPassword {
   form: FormGroup;
   submitting = false;
   errorMessage = '';
-  private returnUrl = '/';
+  submitted = false;
 
   constructor(
     private auth: AuthService,
-    private router: Router,
-    private route: ActivatedRoute,
     private fb: FormBuilder
   ) {
     this.form = this.fb.group({
-      identifier: ['', Validators.required],
-      password: ['', Validators.required]
+      email: ['', [Validators.required, Validators.email]]
     });
-
-    this.returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || '/';
   }
 
   onSubmit(): void {
@@ -38,14 +33,14 @@ export class Login {
     this.submitting = true;
     this.errorMessage = '';
 
-    this.auth.login(this.form.value.identifier, this.form.value.password).subscribe({
+    this.auth.forgotPassword(this.form.value.email).subscribe({
       next: () => {
         this.submitting = false;
-        this.router.navigateByUrl(this.returnUrl);
+        this.submitted = true;
       },
       error: (err) => {
         this.submitting = false;
-        this.errorMessage = 'Invalid email/username or password.';
+        this.submitted = true;
         console.error(err);
       }
     });

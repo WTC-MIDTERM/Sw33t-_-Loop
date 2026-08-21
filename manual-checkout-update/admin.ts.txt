@@ -1,0 +1,34 @@
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { StrapiService, AdminOrder } from '../../core/strapi';
+import { AuthService, AuthUser } from '../../core/auth';
+
+@Component({
+  selector: 'app-admin',
+  imports: [],
+  templateUrl: './admin.html',
+  styleUrl: './admin.css'
+})
+export class Admin implements OnInit {
+  currentUser: AuthUser | null = null;
+  orders: AdminOrder[] = [];
+  loading = true;
+  errorMessage = '';
+
+  constructor(private auth: AuthService, private strapi: StrapiService, private cdr: ChangeDetectorRef) {}
+
+  ngOnInit(): void {
+    this.currentUser = this.auth.getCurrentUser();
+    this.strapi.getAdminOrders().subscribe({
+      next: (response) => {
+        this.orders = response.data;
+        this.loading = false;
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.errorMessage = 'Could not load orders.';
+        this.loading = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
+}

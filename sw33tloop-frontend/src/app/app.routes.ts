@@ -7,6 +7,8 @@ import { Team } from './pages/team/team';
 import { CartPage } from './pages/cart-page/cart-page';
 import { Login } from './pages/login/login';
 import { Register } from './pages/register/register';
+import { ForgotPassword } from './pages/forgot-password/forgot-password';
+import { ResetPassword } from './pages/reset-password/reset-password';
 import { Admin } from './pages/admin/admin';
 import { adminGuardGuard } from './core/admin-guard-guard';
 
@@ -19,6 +21,8 @@ export const routes: Routes = [
   { path: 'cart', component: CartPage },
   { path: 'login', component: Login },
   { path: 'register', component: Register },
+  { path: 'forgot-password', component: ForgotPassword },
+  { path: 'reset-password', component: ResetPassword },
   { path: 'admin', component: Admin, canActivate: [adminGuardGuard] },
   { path: '**', redirectTo: '' }
 ];

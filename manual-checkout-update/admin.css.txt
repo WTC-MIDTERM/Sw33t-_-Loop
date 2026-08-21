@@ -1,0 +1,8 @@
+.admin-page { max-width: 900px; margin: 0 auto; padding: 60px 20px; }
+.admin-page h1, .admin-page > p { text-align: center; }
+.orders-list { display: grid; gap: 16px; margin-top: 20px; }
+.order-card { background: #fdf6f0; border-radius: 12px; padding: 18px; }
+.order-card p { margin: 8px 0; }
+.order-card-heading { display: flex; justify-content: space-between; align-items: center; }
+.status { background: #3a1f1f; color: white; border-radius: 999px; padding: 5px 12px; text-transform: capitalize; }
+.admin-error { color: #c0392b; text-align: center; }

@@ -1,34 +1,34 @@
 /**
- * menu-item controller
+ * service controller
  *
- * Path: src/api/menu-item/controllers/menu-item.ts
+ * Path: src/api/service/controllers/service.ts
  *
- * Anyone can browse the menu (find/findOne), but only admins can
- * create, update, or delete menu items from the admin dashboard.
+ * Anyone can browse services (find/findOne), but only admins can
+ * create, update, or delete them from the storefront admin dashboard.
  */
 
 import { factories } from '@strapi/strapi';
 
 export default factories.createCoreController(
-  'api::menu-item.menu-item',
+  'api::service.service',
   () => ({
     async create(ctx: any) {
       if (!ctx.state.user?.isAdmin) {
-        return ctx.forbidden('Only admins can create menu items.');
+        return ctx.forbidden('Only admins can create services.');
       }
       return super.create(ctx);
     },
 
     async update(ctx: any) {
       if (!ctx.state.user?.isAdmin) {
-        return ctx.forbidden('Only admins can update menu items.');
+        return ctx.forbidden('Only admins can update services.');
       }
       return super.update(ctx);
     },
 
     async delete(ctx: any) {
       if (!ctx.state.user?.isAdmin) {
-        return ctx.forbidden('Only admins can delete menu items.');
+        return ctx.forbidden('Only admins can delete services.');
       }
       return super.delete(ctx);
     },

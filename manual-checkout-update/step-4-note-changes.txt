@@ -1,0 +1,94 @@
+STEP 4 — ADD AN OPTIONAL CUSTOMER NOTE
+
+1. CART FORM
+File: sw33tloop-frontend/src/app/pages/cart-page/cart-page.ts
+
+Find this line inside checkoutForm:
+
+paymentMethod: ['cash', Validators.required]
+
+Add this line ABOVE it:
+
+note: [''],
+
+
+2. SEND THE NOTE
+File: sw33tloop-frontend/src/app/pages/cart-page/cart-page.ts
+
+Find this line inside the payload:
+
+phone: this.checkoutForm.value.phone,
+
+Add this line BELOW it:
+
+note: this.checkoutForm.value.note,
+
+
+3. SHOW THE NOTE BOX
+File: sw33tloop-frontend/src/app/pages/cart-page/cart-page.html
+
+Find the phone-number validation block. It ends with:
+
+<p class="field-error">Please enter a valid phone number.</p>
+}
+
+Paste this code immediately AFTER that block:
+
+<label for="note">Order Note <span class="optional-label">(optional)</span></label>
+<textarea
+  id="note"
+  formControlName="note"
+  rows="3"
+  maxlength="500"
+  placeholder="Tell us any special requests, for example: no nuts or please call when you arrive."
+></textarea>
+
+
+4. TELL THE FRONTEND ABOUT THE NOTE
+File: sw33tloop-frontend/src/app/core/strapi.ts
+
+Find this part of OrderPayload:
+
+phone: string;
+paymentMethod: 'cash' | 'bank';
+
+Change it to:
+
+phone: string;
+note?: string;
+paymentMethod: 'cash' | 'bank';
+
+
+5. SAVE THE NOTE IN STRAPI
+File: sw33tloop-backend/src/api/order/content-types/order/schema.json
+
+Find the phone section:
+
+"phone": {
+  "type": "string",
+  "required": true
+},
+
+Paste this directly BELOW it:
+
+"note": {
+  "type": "text",
+  "maxLength": 500
+},
+
+Do NOT add "required": true. The note must remain optional.
+
+6. OPTIONAL STYLE
+File: sw33tloop-frontend/src/app/pages/cart-page/cart-page.css
+
+Add this at the bottom of the file:
+
+.optional-label {
+  color: #777;
+  font-weight: 400;
+}
+
+7. RESTART AND TEST
+
+Stop the backend with Ctrl + C, then run npm run develop inside sw33tloop-backend.
+Restart/refresh the frontend. Place an order with a note, then open the Order in Strapi Admin and confirm that its Note field contains your message.

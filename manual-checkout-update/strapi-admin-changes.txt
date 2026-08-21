@@ -1,0 +1,15 @@
+File: sw33tloop-frontend/src/app/core/strapi.ts
+
+1. Add this interface below the existing Order interface:
+
+export interface AdminOrder extends Order {
+  createdAt: string;
+  note?: string;
+}
+
+2. Add this method inside StrapiService, below createOrder():
+
+getAdminOrders(): Observable<{ data: AdminOrder[] }> {
+  const headers = new HttpHeaders({ Authorization: `Bearer ${this.auth.getToken()}` });
+  return this.http.get<{ data: AdminOrder[] }>(`${this.baseUrl}/orders?sort=createdAt:desc`, { headers });
+}

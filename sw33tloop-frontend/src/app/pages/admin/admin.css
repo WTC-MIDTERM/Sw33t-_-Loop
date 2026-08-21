@@ -1,36 +1,377 @@
 .admin-page {
-  max-width: 800px;
+  max-width: 900px;
   margin: 0 auto;
-  padding: 60px 20px;
-  text-align: center;
+  padding: 40px 20px 80px;
 }
 
-.admin-stats {
+.admin-page h1 {
+  text-align: center;
+  margin-bottom: 4px;
+}
+
+.welcome-line {
+  text-align: center;
+  color: #777;
+  margin-bottom: 24px;
+}
+
+.admin-tabs {
   display: flex;
   justify-content: center;
-  gap: 20px;
-  margin: 30px 0;
+  gap: 10px;
+  margin-bottom: 24px;
 }
 
-.stat-card {
+.admin-tabs button {
+  padding: 10px 24px;
+  border-radius: 999px;
+  border: 1px solid #3a1f1f;
+  background: transparent;
+  color: #3a1f1f;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.admin-tabs button.active {
+  background-color: #3a1f1f;
+  color: #fff;
+}
+
+.loading-text,
+.empty-text {
+  text-align: center;
+  color: #777;
+  padding: 40px 0;
+}
+
+/* ---------- ORDERS ---------- */
+.orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.order-card {
   background: #fdf6f0;
-  border-radius: 16px;
-  padding: 30px 40px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  border-radius: 14px;
+  padding: 18px 20px;
 }
 
-.stat-card h3 {
-  font-size: 2.5rem;
-  margin: 0;
+.order-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.order-id {
+  font-weight: 700;
+}
+
+.order-status-badge {
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.status-pending {
+  background-color: #fdf3d6;
+  color: #8a6d1f;
+}
+
+.status-confirmed {
+  background-color: #dbeeff;
+  color: #1c5a8a;
+}
+
+.status-delivered {
+  background-color: #ddf3e0;
+  color: #1e7d34;
+}
+
+.status-cancelled {
+  background-color: #fbe0df;
+  color: #a33326;
+}
+
+.order-items {
+  font-size: 0.9rem;
+  color: #555;
+  margin: 6px 0 14px;
+}
+
+.order-details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px 20px;
+  margin-bottom: 14px;
+  font-size: 0.9rem;
+}
+
+.order-details-grid strong {
+  display: block;
+  font-size: 0.75rem;
+  color: #999;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.order-location {
+  grid-column: 1 / -1;
+}
+
+.order-status-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.order-status-controls label {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.order-status-controls select {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  text-transform: capitalize;
+}
+
+.saving-text {
+  font-size: 0.8rem;
+  color: #777;
+}
+
+/* ---------- MESSAGES ---------- */
+.messages-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.message-card {
+  background: #fdf6f0;
+  border-radius: 14px;
+  padding: 16px 20px;
+}
+
+.message-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.message-card-header a {
+  color: #3a1f1f;
+  font-size: 0.85rem;
+}
+
+.message-body {
+  margin: 0 0 8px;
+  color: #444;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.message-date {
+  font-size: 0.75rem;
+  color: #999;
 }
 
 .admin-note {
   margin-top: 30px;
-  font-size: 0.95rem;
+  text-align: center;
+  font-size: 0.9rem;
   color: #555;
 }
 
 .admin-note a {
   color: #3a1f1f;
   font-weight: 600;
+}
+
+/* ---------- MENU ITEMS / SERVICES (CRUD) ---------- */
+.crud-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.crud-header h2 {
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+.add-btn {
+  padding: 8px 18px;
+  border-radius: 999px;
+  border: none;
+  background-color: #3a1f1f;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.crud-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: #fdf6f0;
+  border-radius: 14px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.crud-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  flex: 1;
+}
+
+.crud-form input,
+.crud-form textarea {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 0.95rem;
+  font-weight: normal;
+  font-family: inherit;
+}
+
+.crud-form-row {
+  display: flex;
+  gap: 14px;
+}
+
+.price-field {
+  max-width: 200px;
+}
+
+.crud-form-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.crud-form-actions button[type='submit'] {
+  padding: 10px 24px;
+  border-radius: 999px;
+  border: none;
+  background-color: #3a1f1f;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.crud-form-actions button[type='submit']:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.cancel-btn {
+  padding: 10px 24px;
+  border-radius: 999px;
+  border: 1px solid #999;
+  background: transparent;
+  color: #555;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.crud-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.crud-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  background: #fdf6f0;
+  border-radius: 14px;
+  padding: 16px 20px;
+}
+
+.crud-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.crud-category {
+  align-self: flex-start;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #a15c3e;
+  background: #f5e3d3;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+.crud-desc {
+  margin: 4px 0 0;
+  color: #555;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.crud-price {
+  font-weight: 700;
+  color: #3a1f1f;
+}
+
+.crud-card-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.crud-card-actions button {
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid #3a1f1f;
+  background: transparent;
+  color: #3a1f1f;
+  font-weight: 600;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.crud-card-actions .delete-btn {
+  border-color: #c0392b;
+  color: #c0392b;
+}
+
+.auth-error {
+  color: #c0392b;
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+@media (max-width: 600px) {
+  .order-details-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .crud-form-row {
+    flex-direction: column;
+  }
+
+  .crud-card {
+    flex-direction: column;
+  }
 }

@@ -39,6 +39,16 @@ export class AuthService {
     localStorage.removeItem(this.userKey);
   }
 
+  forgotPassword(email: string): Observable<{ ok: boolean }> {
+    return this.http.post<{ ok: boolean }>(`${this.baseUrl}/auth/forgot-password`, { email });
+  }
+
+  resetPassword(code: string, password: string, passwordConfirmation: string): Observable<AuthResponse> {
+    return this.http
+      .post<AuthResponse>(`${this.baseUrl}/auth/reset-password`, { code, password, passwordConfirmation })
+      .pipe(tap((res) => this.saveSession(res)));
+  }
+
   private saveSession(res: AuthResponse): void {
     localStorage.setItem(this.tokenKey, res.jwt);
     localStorage.setItem(this.userKey, JSON.stringify(res.user));

@@ -1,11 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Component, ChangeDetectorRef } from '@angular/core';
+import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CartService } from '../../core/cart';
-import { StrapiService } from '../../core/strapi';
+import { StrapiService, OrderPayload } from '../../core/strapi';
 import { AuthService } from '../../core/auth';
-
-const CHECKOUT_DRAFT_KEY = 'sw33tloop_checkout_draft';
+import { PendingOrderService } from '../../core/pending-order';
 
 @Component({
   selector: 'app-cart',
@@ -13,13 +12,15 @@ const CHECKOUT_DRAFT_KEY = 'sw33tloop_checkout_draft';
   templateUrl: './cart-page.html',
   styleUrl: './cart-page.css'
 })
-export class CartPage implements OnInit {
+export class CartPage {
   checkoutForm: FormGroup;
   orderPlaced = false;
-  orderStatus = 'pending';
   submitting = false;
   errorMessage = '';
+  needsAccount = false;
+  orderStatus: string | null = null;
 
+  // Replace these with your real bank details / QR code image
   bankName = 'ABA Bank';
   bankAccountName = 'SW33T LOOP';
   bankAccountNumber = '000 123 456';
@@ -28,24 +29,23 @@ export class CartPage implements OnInit {
     public cart: CartService,
     public auth: AuthService,
     private strapi: StrapiService,
+    private pendingOrder: PendingOrderService,
     private router: Router,
-    private fb: FormBuilder
+    private route: ActivatedRoute,
+    private fb: FormBuilder,
+    private cdr: ChangeDetectorRef
   ) {
     this.checkoutForm = this.fb.group({
       location: ['', Validators.required],
-      phone: ['', [Validators.required, Validators.pattern(/^[0-9+()\-\s]{7,20}$/)]],
+      phone: ['', Validators.required],
       paymentMethod: ['cash', Validators.required]
     });
-  }
 
-  ngOnInit(): void {
-    const savedDraft = localStorage.getItem(CHECKOUT_DRAFT_KEY);
-    if (!savedDraft) return;
-
-    try {
-      this.checkoutForm.patchValue(JSON.parse(savedDraft));
-    } catch {
-      localStorage.removeItem(CHECKOUT_DRAFT_KEY);
+    // If we just came back from a successful login/register that
+    // auto-submitted a saved order, show the confirmation screen.
+    if (this.route.snapshot.queryParamMap.get('orderConfirmed') === 'true') {
+      this.orderPlaced = true;
+      this.orderStatus = 'pending';
     }
   }
 
@@ -59,57 +59,87 @@ export class CartPage implements OnInit {
       return;
     }
 
+    this.errorMessage = '';
+    this.needsAccount = false;
+
+    // Not logged in: save exactly what they typed, then send them to
+    // create an account. Nothing gets lost -- once they finish signing
+    // up, the order submits automatically with this saved data.
     if (!this.auth.isLoggedIn()) {
-      this.saveCheckoutDraft();
-      this.errorMessage = 'Create an account or log in to place your order. Your checkout details have been saved.';
+      this.pendingOrder.save({
+        location: this.checkoutForm.value.location,
+        phone: this.checkoutForm.value.phone,
+        paymentMethod: this.checkoutForm.value.paymentMethod,
+        items: this.cart.items(),
+        total: this.cart.total()
+      });
+
+      this.needsAccount = true;
+      this.errorMessage =
+        "You'll need an account to place an order. Your details are saved -- just sign up or log in and we'll finish placing it.";
+      this.cdr.detectChanges();
       return;
     }
 
+    this.submit();
+  }
+
+  private submit(): void {
     this.submitting = true;
     this.errorMessage = '';
 
-    const payload = {
-      items: this.cart.items().map((item) => ({
-        id: item.id,
-        name: item.name,
-        price: item.price,
-        quantity: item.quantity
+    const payload: OrderPayload = {
+      items: this.cart.items().map((i) => ({
+        id: i.id,
+        name: i.name,
+        price: i.price,
+        quantity: i.quantity
       })),
       total: this.cart.total(),
       location: this.checkoutForm.value.location,
       phone: this.checkoutForm.value.phone,
-      paymentMethod: this.checkoutForm.value.paymentMethod as 'cash' | 'bank'
+      paymentMethod: this.checkoutForm.value.paymentMethod
     };
 
     this.strapi.createOrder(payload).subscribe({
-      next: (response) => {
+      next: (res) => {
         this.submitting = false;
         this.orderPlaced = true;
-        this.orderStatus = response.data.orderStatus || 'pending';
+        this.orderStatus = res.data.orderStatus;
         this.cart.clearCart();
-        localStorage.removeItem(CHECKOUT_DRAFT_KEY);
+        this.cdr.detectChanges();
       },
       error: (err) => {
+        // Always reset submitting -- the button should never stay
+        // stuck on "PLACING ORDER..." no matter what goes wrong.
         this.submitting = false;
-        this.errorMessage = err.status === 401
-          ? 'Please log in or create an account to place an order.'
-          : 'Something went wrong placing your order. Please try again.';
-        console.error('Order failed', err);
+
+        if (err.status === 401) {
+          this.errorMessage = 'Please log in or create an account to place an order.';
+        } else if (err.status === 403) {
+          this.errorMessage =
+            'Your account is not allowed to place orders yet. (Permission issue on the server -- check the Order permissions for the Authenticated role in Strapi.)';
+        } else if (err.status === 400) {
+          this.errorMessage =
+            'Some order details were rejected by the server. Check the browser console for the exact field error.';
+        } else if (err.status === 0) {
+          this.errorMessage =
+            'Could not reach the server. Make sure Strapi is running, then try again.';
+        } else {
+          this.errorMessage = `Something went wrong (error ${err.status}). Please try again.`;
+        }
+
+        console.error('Order failed:', err);
+        this.cdr.detectChanges();
       }
     });
   }
 
-  goToRegister(): void {
-    this.saveCheckoutDraft();
-    this.router.navigate(['/register'], { queryParams: { returnUrl: '/cart' } });
-  }
-
   goToLogin(): void {
-    this.saveCheckoutDraft();
-    this.router.navigate(['/login'], { queryParams: { returnUrl: '/cart' } });
+    this.router.navigate(['/login']);
   }
 
-  private saveCheckoutDraft(): void {
-    localStorage.setItem(CHECKOUT_DRAFT_KEY, JSON.stringify(this.checkoutForm.getRawValue()));
+  goToRegister(): void {
+    this.router.navigate(['/register']);
   }
 }

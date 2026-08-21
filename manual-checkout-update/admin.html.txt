@@ -1,0 +1,29 @@
+<section class="admin-page">
+  <h1>Admin Dashboard</h1>
+  @if (currentUser) { <p>Welcome, {{ currentUser.username }}.</p> }
+
+  <h2>Customer Orders</h2>
+  @if (loading) {
+    <p>Loading orders...</p>
+  } @else if (errorMessage) {
+    <p class="admin-error">{{ errorMessage }}</p>
+  } @else if (orders.length === 0) {
+    <p>There are no orders yet.</p>
+  } @else {
+    <div class="orders-list">
+      @for (order of orders; track order.documentId) {
+        <article class="order-card">
+          <div class="order-card-heading">
+            <strong>Order #{{ order.id }}</strong>
+            <span class="status">{{ order.orderStatus }}</span>
+          </div>
+          <p><strong>Phone:</strong> {{ order.phone }}</p>
+          <p><strong>Delivery:</strong> {{ order.location }}</p>
+          @if (order.note) { <p><strong>Note:</strong> {{ order.note }}</p> }
+          <p><strong>Total:</strong> ${{ order.total }}</p>
+          <p><strong>Items:</strong> {{ order.items.length }}</p>
+        </article>
+      }
+    </div>
+  }
+</section>
