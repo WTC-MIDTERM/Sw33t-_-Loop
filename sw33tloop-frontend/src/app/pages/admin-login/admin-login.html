@@ -1,0 +1,27 @@
+<section class="admin-login-page">
+  <div class="admin-login-box">
+    <div class="admin-login-brand">
+      <img src="assets/image/logo.png" alt="Sw33t Loop" />
+      <h1>Admin Portal</h1>
+      <p>Sign in to manage orders, menu, and services.</p>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <label for="identifier">Email or Username</label>
+      <input type="text" id="identifier" formControlName="identifier" placeholder="admin@sw33tloop.com" />
+
+      <label for="password">Password</label>
+      <input type="password" id="password" formControlName="password" placeholder="Your password" />
+
+      <button type="submit" [disabled]="submitting">
+        {{ submitting ? 'SIGNING IN...' : 'SIGN IN' }}
+      </button>
+
+      @if (errorMessage) {
+        <p class="admin-login-error">{{ errorMessage }}</p>
+      }
+    </form>
+
+    <a class="back-to-site" href="/">&larr; Back to site</a>
+  </div>
+</section>

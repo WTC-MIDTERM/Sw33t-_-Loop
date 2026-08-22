@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { PendingOrder } from './pending-order';
+import { PendingOrderService } from './pending-order';
 
-describe('PendingOrder', () => {
-  let service: PendingOrder;
+describe('PendingOrderService', () => {
+  let service: PendingOrderService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(PendingOrder);
+    service = TestBed.inject(PendingOrderService);
   });
 
   it('should be created', () => {

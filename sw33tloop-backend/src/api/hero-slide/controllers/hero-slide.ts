@@ -1,6 +1,4 @@
-/**
- * hero-slide controller
- */
+
 
 import { factories } from '@strapi/strapi';
 

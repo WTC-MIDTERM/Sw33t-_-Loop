@@ -1,242 +1,361 @@
-<section class="admin-page">
-  <h1>Admin Dashboard</h1>
+<section class="admin-shell">
+  <aside class="admin-sidebar">
+    <div class="admin-brand">
+      <span class="admin-brand-name">Sw33t Loop</span>
+    </div>
 
-  @if (currentUser) {
-    <p class="welcome-line">Welcome, {{ currentUser.username }}.</p>
-  }
+    <nav class="admin-nav">
+      @for (item of navItems; track item.tab) {
+        <button
+          class="admin-nav-item"
+          [class.active]="activeTab === item.tab"
+          (click)="setTab(item.tab)"
+        >
+          <span class="admin-nav-icon">{{ item.icon }}</span>
+          <span class="admin-nav-label">{{ item.label }}</span>
+          @if (item.comingSoon) {
+            <span class="admin-nav-soon">Soon</span>
+          }
+        </button>
+      }
+    </nav>
 
-  <div class="admin-tabs">
-    <button [class.active]="activeTab === 'orders'" (click)="setTab('orders')">
-      Orders ({{ orders.length }})
+    <button class="admin-logout" (click)="logout()">
+      <span>&larr;</span> Log Out
     </button>
-    <button [class.active]="activeTab === 'messages'" (click)="setTab('messages')">
-      Messages ({{ messages.length }})
-    </button>
-    <button [class.active]="activeTab === 'menu-items'" (click)="setTab('menu-items')">
-      Menu Items ({{ menuItems.length }})
-    </button>
-    <button [class.active]="activeTab === 'services'" (click)="setTab('services')">
-      Services ({{ services.length }})
-    </button>
-  </div>
+  </aside>
 
-  @if (activeTab === 'orders') {
-    <div class="admin-panel">
-      @if (loadingOrders) {
-        <p class="loading-text">Loading orders...</p>
-      } @else if (orders.length === 0) {
-        <p class="empty-text">No orders yet.</p>
-      } @else {
-        <div class="orders-list">
-          @for (order of orders; track order.id) {
-            <div class="order-card">
-              <div class="order-card-header">
-                <span class="order-id">Order #{{ order.id }}</span>
-                <span class="order-status-badge" [class]="'status-' + order.orderStatus">
-                  {{ order.orderStatus }}
-                </span>
+  <main class="admin-main">
+    <header class="admin-topbar">
+      <div>
+        <h1>{{ getTabLabel() }}</h1>
+        @if (currentUser) {
+          <p class="welcome-line">Welcome back, {{ currentUser.username }}.</p>
+        }
+      </div>
+    </header>
+
+    <div class="admin-content">
+      @if (activeTab === 'dashboard') {
+        <div class="stats-grid">
+          <div class="stat-card">
+            <span class="stat-label">Total Revenue</span>
+            <span class="stat-value">${{ totalRevenue.toFixed(2) }}</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Total Orders</span>
+            <span class="stat-value">{{ orders.length }}</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Pending Orders</span>
+            <span class="stat-value">{{ pendingOrdersCount }}</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Catalog Items</span>
+            <span class="stat-value">{{ catalogCount }}</span>
+          </div>
+        </div>
+
+        <div class="dashboard-grid">
+          <div class="dashboard-panel">
+            <h2>Revenue Overview</h2>
+            @if (revenueChartData.length === 0) {
+              <p class="empty-text">No revenue data yet.</p>
+            } @else {
+              <div class="revenue-chart">
+                @for (point of revenueChartData; track point.label) {
+                  <div class="revenue-bar-col">
+                    <div class="revenue-bar-track">
+                      <div
+                        class="revenue-bar"
+                        [style.height.%]="(point.value / maxRevenueValue) * 100"
+                      ></div>
+                    </div>
+                    <span class="revenue-bar-label">{{ point.label }}</span>
+                    <span class="revenue-bar-value">${{ point.value.toFixed(0) }}</span>
+                  </div>
+                }
               </div>
+            }
+          </div>
 
-              <p class="order-items">{{ orderItemsSummary(order) }}</p>
-
-              <div class="order-details-grid">
-                <div>
-                  <strong>Total</strong>
-                  <span>${{ order.total.toFixed(2) }}</span>
-                </div>
-                <div>
-                  <strong>Phone</strong>
-                  <span>{{ order.phone }}</span>
-                </div>
-                <div>
-                  <strong>Payment</strong>
-                  <span>{{ order.paymentMethod === 'cash' ? 'Cash on Delivery' : 'Bank Transfer' }}</span>
-                </div>
-                <div class="order-location">
-                  <strong>Location</strong>
-                  <span>{{ order.location }}</span>
-                </div>
+          <div class="dashboard-panel">
+            <h2>Recent Orders</h2>
+            @if (recentOrders.length === 0) {
+              <p class="empty-text">No orders yet.</p>
+            } @else {
+              <div class="mini-list">
+                @for (order of recentOrders; track order.id) {
+                  <div class="mini-list-row">
+                    <div>
+                      <strong>Order #{{ order.id }}</strong>
+                      <span class="mini-list-sub">{{ orderItemsSummary(order) }}</span>
+                    </div>
+                    <span class="order-status-badge" [class]="'status-' + order.orderStatus">
+                      {{ order.orderStatus }}
+                    </span>
+                  </div>
+                }
               </div>
+            }
+          </div>
 
-              <div class="order-status-controls">
-                <label>Update status:</label>
-                <select
-                  [value]="order.orderStatus"
-                  (change)="updateStatus(order, $any($event.target).value)"
-                  [disabled]="updatingOrderId === order.id"
-                >
-                  @for (status of statusOptions; track status) {
-                    <option [value]="status">{{ status }}</option>
+          <div class="dashboard-panel">
+            <h2>Top Products</h2>
+            @if (topProducts.length === 0) {
+              <p class="empty-text">No sales data yet.</p>
+            } @else {
+              <div class="mini-list">
+                @for (product of topProducts; track product.name) {
+                  <div class="mini-list-row">
+                    <div>
+                      <strong>{{ product.name }}</strong>
+                      <span class="mini-list-sub">{{ product.quantity }} sold</span>
+                    </div>
+                    <span class="mini-list-value">${{ product.revenue.toFixed(2) }}</span>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+
+          <div class="dashboard-panel">
+            <h2>Recent Messages</h2>
+            @if (recentMessages.length === 0) {
+              <p class="empty-text">No messages yet.</p>
+            } @else {
+              <div class="mini-list">
+                @for (msg of recentMessages; track msg.id) {
+                  <div class="mini-list-row">
+                    <div>
+                      <strong>{{ msg.name }}</strong>
+                      <span class="mini-list-sub">{{ msg.message }}</span>
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      @if (activeTab === 'orders') {
+        @if (loadingOrders) {
+          <p class="loading-text">Loading orders...</p>
+        } @else if (orders.length === 0) {
+          <p class="empty-text">No orders yet.</p>
+        } @else {
+          <div class="orders-list">
+            @for (order of orders; track order.id) {
+              <div class="order-card">
+                <div class="order-card-header">
+                  <span class="order-id">Order #{{ order.id }}</span>
+                  <span class="order-status-badge" [class]="'status-' + order.orderStatus">
+                    {{ order.orderStatus }}
+                  </span>
+                </div>
+
+                <p class="order-items">{{ orderItemsSummary(order) }}</p>
+
+                <div class="order-details-grid">
+                  <div>
+                    <strong>Total</strong>
+                    <span>${{ order.total.toFixed(2) }}</span>
+                  </div>
+                  <div>
+                    <strong>Phone</strong>
+                    <span>{{ order.phone }}</span>
+                  </div>
+                  <div>
+                    <strong>Payment</strong>
+                    <span>{{ order.paymentMethod === 'cash' ? 'Cash on Delivery' : 'Bank Transfer' }}</span>
+                  </div>
+                  <div class="order-location">
+                    <strong>Location</strong>
+                    <span>{{ order.location }}</span>
+                  </div>
+                </div>
+
+                <div class="order-status-controls">
+                  <label>Update status:</label>
+                  <select
+                    [value]="order.orderStatus"
+                    (change)="updateStatus(order, $any($event.target).value)"
+                    [disabled]="updatingOrderId === order.id"
+                  >
+                    @for (status of statusOptions; track status) {
+                      <option [value]="status">{{ status }}</option>
+                    }
+                  </select>
+                  @if (updatingOrderId === order.id) {
+                    <span class="saving-text">Saving...</span>
                   }
-                </select>
-                @if (updatingOrderId === order.id) {
-                  <span class="saving-text">Saving...</span>
-                }
+                </div>
               </div>
-            </div>
-          }
-        </div>
-      }
-    </div>
-  }
-
-  @if (activeTab === 'messages') {
-    <div class="admin-panel">
-      @if (loadingMessages) {
-        <p class="loading-text">Loading messages...</p>
-      } @else if (messages.length === 0) {
-        <p class="empty-text">No messages yet.</p>
-      } @else {
-        <div class="messages-list">
-          @for (msg of messages; track msg.id) {
-            <div class="message-card">
-              <div class="message-card-header">
-                <strong>{{ msg.name }}</strong>
-                <a [href]="'mailto:' + msg.email">{{ msg.email }}</a>
-              </div>
-              <p class="message-body">{{ msg.message }}</p>
-              <span class="message-date">{{ msg.createdAt | date: 'medium' }}</span>
-            </div>
-          }
-        </div>
-      }
-    </div>
-  }
-
-  @if (activeTab === 'menu-items') {
-    <div class="admin-panel">
-      <div class="crud-header">
-        <h2>Menu Items</h2>
-        @if (editingMenuItemId === null) {
-          <button class="add-btn" (click)="startAddMenuItem()">+ Add Menu Item</button>
+            }
+          </div>
         }
-      </div>
-
-      @if (editingMenuItemId !== null) {
-        <form class="crud-form" [formGroup]="menuItemForm" (ngSubmit)="saveMenuItem()">
-          <div class="crud-form-row">
-            <label>Name
-              <input type="text" formControlName="name" placeholder="e.g. Classic Glazed" />
-            </label>
-            <label>Category
-              <input type="text" formControlName="category" placeholder="e.g. Donuts" />
-            </label>
-          </div>
-          <label>Description
-            <textarea formControlName="desc" rows="2" placeholder="Short description"></textarea>
-          </label>
-          <label class="price-field">Price ($)
-            <input type="number" step="0.01" min="0" formControlName="price" />
-          </label>
-
-          @if (menuItemError) {
-            <p class="auth-error">{{ menuItemError }}</p>
-          }
-
-          <div class="crud-form-actions">
-            <button type="submit" [disabled]="savingMenuItem">
-              {{ savingMenuItem ? 'SAVING...' : (editingMenuItemId === 'new' ? 'ADD ITEM' : 'SAVE CHANGES') }}
-            </button>
-            <button type="button" class="cancel-btn" (click)="cancelMenuItemEdit()">Cancel</button>
-          </div>
-        </form>
       }
 
-      @if (loadingMenuItems) {
-        <p class="loading-text">Loading menu items...</p>
-      } @else if (menuItems.length === 0) {
-        <p class="empty-text">No menu items yet.</p>
-      } @else {
-        <div class="crud-list">
-          @for (item of menuItems; track item.id) {
-            <div class="crud-card">
-              <div class="crud-card-info">
-                <strong>{{ item.name }}</strong>
-                @if (item.category) {
-                  <span class="crud-category">{{ item.category }}</span>
-                }
-                <p class="crud-desc">{{ item.desc }}</p>
-                <span class="crud-price">${{ item.price.toFixed(2) }}</span>
+      @if (activeTab === 'messages') {
+        @if (loadingMessages) {
+          <p class="loading-text">Loading messages...</p>
+        } @else if (messages.length === 0) {
+          <p class="empty-text">No messages yet.</p>
+        } @else {
+          <div class="messages-list">
+            @for (msg of messages; track msg.id) {
+              <div class="message-card">
+                <div class="message-card-header">
+                  <strong>{{ msg.name }}</strong>
+                  <a [href]="'mailto:' + msg.email">{{ msg.email }}</a>
+                </div>
+                <p class="message-body">{{ msg.message }}</p>
+                <span class="message-date">{{ msg.createdAt | date: 'medium' }}</span>
               </div>
-              <div class="crud-card-actions">
-                <button (click)="startEditMenuItem(item)">Edit</button>
-                <button class="delete-btn" (click)="deleteMenuItem(item)">Delete</button>
-              </div>
-            </div>
-          }
-        </div>
-      }
-    </div>
-  }
-
-  @if (activeTab === 'services') {
-    <div class="admin-panel">
-      <div class="crud-header">
-        <h2>Services</h2>
-        @if (editingServiceId === null) {
-          <button class="add-btn" (click)="startAddService()">+ Add Service</button>
+            }
+          </div>
         }
-      </div>
-
-      @if (editingServiceId !== null) {
-        <form class="crud-form" [formGroup]="serviceForm" (ngSubmit)="saveService()">
-          <div class="crud-form-row">
-            <label>Name
-              <input type="text" formControlName="name" placeholder="e.g. Custom Birthday Cake" />
-            </label>
-            <label>Category
-              <input type="text" formControlName="category" placeholder="e.g. Catering" />
-            </label>
-          </div>
-          <label>Description
-            <textarea formControlName="desc" rows="2" placeholder="Short description"></textarea>
-          </label>
-          <label class="price-field">Price ($)
-            <input type="number" step="0.01" min="0" formControlName="price" />
-          </label>
-
-          @if (serviceError) {
-            <p class="auth-error">{{ serviceError }}</p>
-          }
-
-          <div class="crud-form-actions">
-            <button type="submit" [disabled]="savingService">
-              {{ savingService ? 'SAVING...' : (editingServiceId === 'new' ? 'ADD SERVICE' : 'SAVE CHANGES') }}
-            </button>
-            <button type="button" class="cancel-btn" (click)="cancelServiceEdit()">Cancel</button>
-          </div>
-        </form>
       }
 
-      @if (loadingServices) {
-        <p class="loading-text">Loading services...</p>
-      } @else if (services.length === 0) {
-        <p class="empty-text">No services yet.</p>
-      } @else {
-        <div class="crud-list">
-          @for (service of services; track service.id) {
-            <div class="crud-card">
-              <div class="crud-card-info">
-                <strong>{{ service.name }}</strong>
-                @if (service.category) {
-                  <span class="crud-category">{{ service.category }}</span>
-                }
-                <p class="crud-desc">{{ service.desc }}</p>
-                <span class="crud-price">${{ service.price.toFixed(2) }}</span>
-              </div>
-              <div class="crud-card-actions">
-                <button (click)="startEditService(service)">Edit</button>
-                <button class="delete-btn" (click)="deleteService(service)">Delete</button>
-              </div>
-            </div>
+      @if (activeTab === 'menu-items') {
+        <div class="crud-header">
+          <h2>Menu Items</h2>
+          @if (editingMenuItemId === null) {
+            <button class="add-btn" (click)="startAddMenuItem()">+ Add Menu Item</button>
           }
         </div>
-      }
-    </div>
-  }
 
-  <p class="admin-note">
-    Need finer control (uploading photos for donuts, team members, or hero images)? Use the full
-    <a href="http://localhost:1337/admin" target="_blank">Strapi admin panel</a>.
-  </p>
+        @if (editingMenuItemId !== null) {
+          <form class="crud-form" [formGroup]="menuItemForm" (ngSubmit)="saveMenuItem()">
+            <div class="crud-form-row">
+              <label>Name
+                <input type="text" formControlName="name" placeholder="e.g. Classic Glazed" />
+              </label>
+              <label>Category
+                <input type="text" formControlName="category" placeholder="e.g. Donuts" />
+              </label>
+            </div>
+            <label>Description
+              <textarea formControlName="desc" rows="2" placeholder="Short description"></textarea>
+            </label>
+            <label class="price-field">Price ($)
+              <input type="number" step="0.01" min="0" formControlName="price" />
+            </label>
+
+            @if (menuItemError) {
+              <p class="auth-error">{{ menuItemError }}</p>
+            }
+
+            <div class="crud-form-actions">
+              <button type="submit" [disabled]="savingMenuItem">
+                {{ savingMenuItem ? 'SAVING...' : (editingMenuItemId === 'new' ? 'ADD ITEM' : 'SAVE CHANGES') }}
+              </button>
+              <button type="button" class="cancel-btn" (click)="cancelMenuItemEdit()">Cancel</button>
+            </div>
+          </form>
+        }
+
+        @if (loadingMenuItems) {
+          <p class="loading-text">Loading menu items...</p>
+        } @else if (menuItems.length === 0) {
+          <p class="empty-text">No menu items yet.</p>
+        } @else {
+          <div class="crud-list">
+            @for (item of menuItems; track item.id) {
+              <div class="crud-card">
+                <div class="crud-card-info">
+                  <strong>{{ item.name }}</strong>
+                  @if (item.category) {
+                    <span class="crud-category">{{ item.category }}</span>
+                  }
+                  <p class="crud-desc">{{ item.desc }}</p>
+                  <span class="crud-price">${{ item.price.toFixed(2) }}</span>
+                </div>
+                <div class="crud-card-actions">
+                  <button (click)="startEditMenuItem(item)">Edit</button>
+                  <button class="delete-btn" (click)="deleteMenuItem(item)">Delete</button>
+                </div>
+              </div>
+            }
+          </div>
+        }
+      }
+
+      @if (activeTab === 'services') {
+        <div class="crud-header">
+          <h2>Services</h2>
+          @if (editingServiceId === null) {
+            <button class="add-btn" (click)="startAddService()">+ Add Service</button>
+          }
+        </div>
+
+        @if (editingServiceId !== null) {
+          <form class="crud-form" [formGroup]="serviceForm" (ngSubmit)="saveService()">
+            <div class="crud-form-row">
+              <label>Name
+                <input type="text" formControlName="name" placeholder="e.g. Custom Birthday Cake" />
+              </label>
+              <label>Category
+                <input type="text" formControlName="category" placeholder="e.g. Catering" />
+              </label>
+            </div>
+            <label>Description
+              <textarea formControlName="desc" rows="2" placeholder="Short description"></textarea>
+            </label>
+            <label class="price-field">Price ($)
+              <input type="number" step="0.01" min="0" formControlName="price" />
+            </label>
+
+            @if (serviceError) {
+              <p class="auth-error">{{ serviceError }}</p>
+            }
+
+            <div class="crud-form-actions">
+              <button type="submit" [disabled]="savingService">
+                {{ savingService ? 'SAVING...' : (editingServiceId === 'new' ? 'ADD SERVICE' : 'SAVE CHANGES') }}
+              </button>
+              <button type="button" class="cancel-btn" (click)="cancelServiceEdit()">Cancel</button>
+            </div>
+          </form>
+        }
+
+        @if (loadingServices) {
+          <p class="loading-text">Loading services...</p>
+        } @else if (services.length === 0) {
+          <p class="empty-text">No services yet.</p>
+        } @else {
+          <div class="crud-list">
+            @for (service of services; track service.id) {
+              <div class="crud-card">
+                <div class="crud-card-info">
+                  <strong>{{ service.name }}</strong>
+                  @if (service.category) {
+                    <span class="crud-category">{{ service.category }}</span>
+                  }
+                  <p class="crud-desc">{{ service.desc }}</p>
+                  <span class="crud-price">${{ service.price.toFixed(2) }}</span>
+                </div>
+                <div class="crud-card-actions">
+                  <button (click)="startEditService(service)">Edit</button>
+                  <button class="delete-btn" (click)="deleteService(service)">Delete</button>
+                </div>
+              </div>
+            }
+          </div>
+        }
+      }
+
+      @if (isComingSoon(activeTab)) {
+        <div class="coming-soon">
+          <h2>{{ getTabLabel() }} is coming soon</h2>
+        </div>
+      }
+
+      <p class="admin-note">
+        Need finer control (uploading photos for donuts, team members, or hero images)? Use the full
+        <a href="http://localhost:1337/admin" target="_blank">Strapi admin panel</a>.
+      </p>
+    </div>
+  </main>
 </section>

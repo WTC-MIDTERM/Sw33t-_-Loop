@@ -1,12 +1,3 @@
-/**
- * service controller
- *
- * Path: src/api/service/controllers/service.ts
- *
- * Anyone can browse services (find/findOne), but only admins can
- * create, update, or delete them from the storefront admin dashboard.
- */
-
 import { factories } from '@strapi/strapi';
 
 export default factories.createCoreController(

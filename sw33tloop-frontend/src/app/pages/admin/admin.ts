@@ -1,5 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { DatePipe } from '@angular/common';
+import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
   StrapiService,
@@ -13,7 +14,25 @@ import {
 import { AuthService, AuthUser } from '../../core/auth';
 
 type OrderStatus = Order['orderStatus'];
-type Tab = 'orders' | 'messages' | 'menu-items' | 'services';
+type Tab =
+  | 'dashboard'
+  | 'orders'
+  | 'messages'
+  | 'menu-items'
+  | 'services'
+  | 'customers'
+  | 'inventory'
+  | 'production'
+  | 'payments'
+  | 'reports'
+  | 'settings';
+
+interface NavItem {
+  tab: Tab;
+  label: string;
+  icon: string;
+  comingSoon?: boolean;
+}
 
 @Component({
   selector: 'app-admin',
@@ -23,7 +42,8 @@ type Tab = 'orders' | 'messages' | 'menu-items' | 'services';
 })
 export class Admin implements OnInit {
   currentUser: AuthUser | null = null;
-  activeTab: Tab = 'orders';
+  activeTab: Tab = 'dashboard';
+  today = new Date();
 
   orders: Order[] = [];
   messages: ContactMessage[] = [];
@@ -37,6 +57,20 @@ export class Admin implements OnInit {
   updatingOrderId: number | null = null;
 
   statusOptions: OrderStatus[] = ['pending', 'confirmed', 'delivered', 'cancelled'];
+
+  navItems: NavItem[] = [
+    { tab: 'dashboard', label: 'Dashboard', icon: '' },
+    { tab: 'orders', label: 'Orders', icon: '' },
+    { tab: 'menu-items', label: 'Menu Items', icon: '' },
+    { tab: 'services', label: 'Services', icon: '' },
+    { tab: 'messages', label: 'Messages', icon: '' },
+    { tab: 'customers', label: 'Customers', icon: '', comingSoon: true },
+    { tab: 'inventory', label: 'Inventory', icon: '', comingSoon: true },
+    { tab: 'production', label: 'Production', icon: '', comingSoon: true },
+    { tab: 'payments', label: 'Payments', icon: '', comingSoon: true },
+    { tab: 'reports', label: 'Reports', icon: '', comingSoon: true },
+    { tab: 'settings', label: 'Settings', icon: '', comingSoon: true }
+  ];
 
   // ---- Menu item form state ----
   menuItemForm: FormGroup;
@@ -54,6 +88,7 @@ export class Admin implements OnInit {
     private auth: AuthService,
     private strapi: StrapiService,
     private cdr: ChangeDetectorRef,
+    private router: Router,
     private fb: FormBuilder
   ) {
     this.menuItemForm = this.fb.group({
@@ -82,6 +117,86 @@ export class Admin implements OnInit {
   setTab(tab: Tab): void {
     this.activeTab = tab;
   }
+
+  getTabLabel(): string {
+    return this.navItems.find((n) => n.tab === this.activeTab)?.label || 'Dashboard';
+  }
+
+  isComingSoon(tab: Tab): boolean {
+    return this.navItems.find((n) => n.tab === tab)?.comingSoon === true;
+  }
+
+  logout(): void {
+    this.auth.logout();
+    this.router.navigate(['/admin/login']);
+  }
+
+  // ==================== DASHBOARD STATS ====================
+
+  get totalRevenue(): number {
+    return this.orders
+      .filter((o) => o.orderStatus !== 'cancelled')
+      .reduce((sum, o) => sum + (o.total || 0), 0);
+  }
+
+  get pendingOrdersCount(): number {
+    return this.orders.filter((o) => o.orderStatus === 'pending').length;
+  }
+
+  get catalogCount(): number {
+    return this.menuItems.length + this.services.length;
+  }
+
+  get recentOrders(): Order[] {
+    return this.orders.slice(0, 5);
+  }
+
+  get recentMessages(): ContactMessage[] {
+    return this.messages.slice(0, 3);
+  }
+
+  get revenueChartData(): { label: string; value: number }[] {
+    const byDay = new Map<string, number>();
+
+    for (const order of this.orders) {
+      if (order.orderStatus === 'cancelled' || !order.createdAt) continue;
+      const key = order.createdAt.slice(0, 10); // YYYY-MM-DD
+      byDay.set(key, (byDay.get(key) || 0) + (order.total || 0));
+    }
+
+    return Array.from(byDay.entries())
+      .sort(([a], [b]) => a.localeCompare(b))
+      .slice(-7)
+      .map(([dateKey, value]) => ({
+        label: new Date(dateKey).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+        value
+      }));
+  }
+
+  get maxRevenueValue(): number {
+    return Math.max(1, ...this.revenueChartData.map((d) => d.value));
+  }
+
+  get topProducts(): { name: string; quantity: number; revenue: number }[] {
+    const byName = new Map<string, { quantity: number; revenue: number }>();
+
+    for (const order of this.orders) {
+      if (order.orderStatus === 'cancelled') continue;
+      for (const item of order.items) {
+        const existing = byName.get(item.name) || { quantity: 0, revenue: 0 };
+        existing.quantity += item.quantity;
+        existing.revenue += item.quantity * item.price;
+        byName.set(item.name, existing);
+      }
+    }
+
+    return Array.from(byName.entries())
+      .map(([name, stats]) => ({ name, ...stats }))
+      .sort((a, b) => b.quantity - a.quantity)
+      .slice(0, 5);
+  }
+
+  // ==================== ORDERS ====================
 
   loadOrders(): void {
     this.loadingOrders = true;

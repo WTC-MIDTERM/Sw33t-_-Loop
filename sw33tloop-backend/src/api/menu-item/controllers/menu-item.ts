@@ -1,11 +1,3 @@
-/**
- * menu-item controller
- *
- * Path: src/api/menu-item/controllers/menu-item.ts
- *
- * Anyone can browse the menu (find/findOne), but only admins can
- * create, update, or delete menu items from the admin dashboard.
- */
 
 import { factories } from '@strapi/strapi';
 

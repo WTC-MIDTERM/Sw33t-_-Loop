@@ -7,7 +7,7 @@
     "displayName": "Order"
   },
   "options": {
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
   "pluginOptions": {},
   "attributes": {
@@ -34,14 +34,22 @@
     },
     "paymentMethod": {
       "type": "enumeration",
-      "enum": ["cash", "bank"],
-      "required": true
+      "required": true,
+      "enum": [
+        "cash",
+        "bank"
+      ]
     },
     "orderStatus": {
       "type": "enumeration",
-      "enum": ["pending", "confirmed", "delivered", "cancelled"],
+      "required": true,
       "default": "pending",
-      "required": true
+      "enum": [
+        "pending",
+        "confirmed",
+        "delivered",
+        "cancelled"
+      ]
     }
   }
 }

@@ -101,6 +101,7 @@ export interface Order extends OrderPayload {
   id: number;
   documentId: string;
   orderStatus: 'pending' | 'confirmed' | 'delivered' | 'cancelled';
+  createdAt: string;
 }
 
 @Injectable({ providedIn: 'root' })

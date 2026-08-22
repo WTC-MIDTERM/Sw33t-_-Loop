@@ -1,6 +1,3 @@
-/**
- * contact-message service
- */
 
 import { factories } from '@strapi/strapi';
 

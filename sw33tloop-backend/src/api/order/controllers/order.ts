@@ -1,9 +1,3 @@
-/**
- * order controller
- *
- * Path: src/api/order/controllers/order.ts
- */
-
 import { factories } from '@strapi/strapi';
 
 export default factories.createCoreController(

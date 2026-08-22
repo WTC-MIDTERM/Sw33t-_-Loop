@@ -1,6 +1,3 @@
-/**
- * menu-item service
- */
 
 import { factories } from '@strapi/strapi';
 

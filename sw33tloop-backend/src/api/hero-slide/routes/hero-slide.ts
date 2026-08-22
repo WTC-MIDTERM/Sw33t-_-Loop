@@ -1,6 +1,3 @@
-/**
- * hero-slide router
- */
 
 import { factories } from '@strapi/strapi';
 
